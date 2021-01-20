@@ -29,4 +29,4 @@ The research will use both close- and distant-reading methods. Text analysis met
 3. Distribution of Scientific Knowledge & Expertise
     - changes in employment of SKE by coalition/opposition
     - patterns in employment at debate-level (interaction)
-    - identification of contexts in which SKE is used (topic modelling?)
+    - identification of contexts in which SKE is used (topic modelling)
