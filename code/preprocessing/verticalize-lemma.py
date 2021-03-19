@@ -42,7 +42,7 @@ def parse(fn):
 ##########
 
 if __name__ == "__main__":
-    lan = "bg"
+    lan = "si"
     list_ = gb(f'/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{lan}/{lan}-ana-xml/*ana.xml*')
     if os.path.exists(f'/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{lan}/{lan}-ana-txt/') == False:
         os.mkdir(f'/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{lan}/{lan}-ana-txt/')

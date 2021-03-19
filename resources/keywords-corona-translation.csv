@@ -9,7 +9,7 @@ bg,epidemic,епидемия
 bg,viruses,вируси
 bg,covid,covid
 bg,covid-19,covid-19
-bg,sars-cov-2,SARS-CoV-2
+bg,sars-cov-2,sars-cov-2
 pl,virus,wirus
 pl,coronavirus,koronawirus
 pl,corona,korona
@@ -20,7 +20,7 @@ pl,epidemic,epidemia
 pl,viruses,wirusy
 pl,covid,covid
 pl,covid-19,covid-19
-pl,sars-cov-2,SARS-CoV-2
+pl,sars-cov-2,sars-cov-2
 si,virus,virus
 si,coronavirus,koronavirus
 si,corona,korona
@@ -30,8 +30,8 @@ si,epidemics,epidemije
 si,epidemic,epidemija
 si,viruses,virusi
 si,covid,covid
-si,covid-20,covid-19
-si,sars-cov-3,SARS-CoV-2
+si,covid-19,covid-19
+si,sars-cov-2,sars-cov-2
 nl,virus,virus
 nl,coronavirus,coronavirus
 nl,corona,corona
@@ -41,8 +41,8 @@ nl,epidemics,epidemieën
 nl,epidemic,epidemie
 nl,viruses,virussen
 nl,covid,covid
-nl,covid-20,covid-19
-nl,sars-cov-3,SARS-CoV-2
+nl,covid-19,covid-19
+nl,sars-cov-2,sars-cov-2
 fr,virus,virus
 fr,coronavirus,coronavirus
 fr,corona,couronne
@@ -52,8 +52,8 @@ fr,epidemics,épidémies
 fr,epidemic,épidémie
 fr,viruses,virus
 fr,covid,covid
-fr,covid-21,covid-19
-fr,sars-cov-4,SRAS-CoV-2
+fr,covid-19,covid-19
+fr,sars-cov-2,SRAS-CoV-2
 is,virus,veira
 is,coronavirus,kórónaveira
 is,corona,kóróna
@@ -63,8 +63,8 @@ is,epidemics,faraldrar
 is,epidemic,faraldur
 is,viruses,vírusar
 is,covid,covid
-is,covid-21,covid-19
-is,sars-cov-4,SARS-CoV-2
+is,covid-19,covid-19
+is,sars-cov-2,sars-cov-2
 lt,virus,virusas
 lt,coronavirus,koronavirusas
 lt,corona,vainikėlis
@@ -74,8 +74,8 @@ lt,epidemics,epidemijos
 lt,epidemic,epidemija
 lt,viruses,virusai
 lt,covid,covid
-lt,covid-22,covid-19
-lt,sars-cov-5,SARS-CoV-2
+lt,covid-19,covid-19
+lt,sars-cov-2,sars-cov-2
 cs,virus,virus
 cs,coronavirus,koronavirus
 cs,corona,korona
@@ -85,8 +85,8 @@ cs,epidemics,epidemie
 cs,epidemic,epidemický
 cs,viruses,viry
 cs,covid,covid
-cs,covid-22,covid-19
-cs,sars-cov-5,SARS-CoV-2
+cs,covid-19,covid-19
+cs,sars-cov-2,sars-cov-2
 it,virus,virus
 it,coronavirus,coronavirus
 it,corona,corona
@@ -96,8 +96,8 @@ it,epidemics,epidemie
 it,epidemic,epidemico
 it,viruses,virus
 it,covid,covid
-it,covid-23,covid-19
-it,sars-cov-6,SARS-CoV-2
+it,covid-19,covid-19
+it,sars-cov-2,sars-cov-2
 tr,virus,virüs
 tr,coronavirus,koronavirüs
 tr,corona,korona
@@ -107,8 +107,8 @@ tr,epidemics,salgın hastalıklar
 tr,epidemic,epidemi
 tr,viruses,virüsler
 tr,covid,kovid
-tr,covid-23,kovid-19
-tr,sars-cov-6,SARS-CoV-2
+tr,covid-19,kovid-19
+tr,sars-cov-2,sars-cov-2
 da,virus,virus
 da,coronavirus,coronavirus
 da,corona,korona
@@ -118,8 +118,8 @@ da,epidemics,epidemier
 da,epidemic,epidemi
 da,viruses,vira
 da,covid,covid
-da,covid-24,covid-19
-da,sars-cov-7,SARS-CoV-2
+da,covid-19,covid-19
+da,sars-cov-2,sars-cov-2
 hu,virus,vírus
 hu,coronavirus,koronavírus
 hu,corona,korona
@@ -129,8 +129,8 @@ hu,epidemics,járványok
 hu,epidemic,járvány
 hu,viruses,vírusok
 hu,covid,covid
-hu,covid-24,covid-19
-hu,sars-cov-7,SARS-CoV-2
+hu,covid-19,covid-19
+hu,sars-cov-2,sars-cov-2
 ro,virus,virus
 ro,coronavirus,coronavirus
 ro,corona,corona
@@ -140,5 +140,5 @@ ro,epidemics,epidemii
 ro,epidemic,epidemic
 ro,viruses,viruși
 ro,covid,covid
-ro,covid-25,covid-19
-ro,sars-cov-8,SARS-CoV-2
+ro,covid-19,covid-19
+ro,sars-cov-2,sars-cov-2

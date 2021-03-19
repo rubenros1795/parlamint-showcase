@@ -1,0 +1,3 @@
+Chen, Y., & Skiena, S. (2014). Building Sentiment Lexicons for All Major Languages. In ACL (2) (pp. 383-389).
+
+https://github.com/felipebravom/StaticTwitterSent/tree/master/extra/SentiStrength
