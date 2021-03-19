@@ -18,3 +18,8 @@
 - BG: some seasonal effects. Peaks in 10/20 and 11/20. No significant change during covid period
 - PL: ** clearly less speakers during March-April 2020 **. Rise to normal level after that
 - SI: no apparent change.
+
+## Length of Session in Words:
+- BG: no significant change. ** Two high outliers in March 2020 **
+- PL: similar pattern to number of unique speakers: ** clearly lower numbers during March-April 2020 **
+- SI: no apparent change.
