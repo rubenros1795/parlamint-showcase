@@ -96,18 +96,24 @@ class utils():
         return re.search(r'(\d+-\d+-\d+)',text).group(0)
 
 class data_loader():
-    # Class for loading data
-    # able to load full dataset for every language 
-    # or subsets based on date/words
 
     def file(fn):
+        """
+        :param fn: filename
+        :type fn: str
+        """
         if os.path.exists(fn):
             return pd.read_csv(fn,sep='\t')
         else:
             print("no DataFrame found")
 
     def full(language,data_version="preprocessed"):
-
+        """
+        :param language: language of dataset in ISO 639 format
+        :type language: str
+        :param data_version: version of the data, preprocessed, raw or lemmatized
+        :type data_version: str
+        """
         config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
 
         files_path = os.path.join("/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original",config_options[data_version])
@@ -122,6 +128,7 @@ class data_loader():
         return data.reset_index(drop=True)
 
     def period(language="",data_version="preprocessed",start_date="",end_date=""):
+        """
         if len(start_date) == 10:
             periods = utils.day_generator(start_date,end_date)
         if len(start_date) == 7:
