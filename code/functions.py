@@ -1,54 +1,66 @@
-import enum
-import re, string,os
-from glob import glob as gb
-import pandas as pd
-from collections import Counter
-from tqdm import tqdm
+# Script containing classes and functions for analysis
+
+from sklearn.feature_extraction.text import TfidfVectorizer
 from datetime import datetime, timedelta, date
-from collections import OrderedDict
-import subprocess
-import matplotlib.pyplot as plt
-import seaborn as sns
-import json
 from gensim.models import KeyedVectors
-import glob
-import os
-import string
-import numpy
-import re
+from scipy.cluster.vq import kmeans,vq
+from collections import OrderedDict
+import matplotlib.pyplot as plt
+from collections import Counter
+from numpy import vstack,array
+from polyglot.text import Text
+from numpy.random import rand
+from glob import glob as gb
+import re, string,os,io
+from tqdm import tqdm
+import seaborn as sns
 import pandas as pd
+import numpy as np
+import subprocess
+import itertools
+import requests
+import polyglot
+import string
+import json
+import numpy
 import gensim
 import random
-from tqdm import tqdm
-from gensim.models import KeyedVectors
-from numpy import vstack,array
-from numpy.random import rand
-from scipy.cluster.vq import kmeans,vq
-import numpy as np
 import math
-import re
-import polyglot
-from polyglot.text import Text
-import io
-import requests
-from sklearn.feature_extraction.text import TfidfVectorizer
-import itertools
+
 
 base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
 
 
 class utils():
     def month_generator(start_month,end_month):
+        """
+        :param start_month: first month of series
+        :type start_month: str
+        :param start_month: last month of series
+        :type start_month: str
+        """
         dates = [start_month, end_month]
         start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
         return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in range((end - start).days)).keys())
 
     def day_generator(start_day,end_day):
+         """
+        :param start_month: first day of series
+        :type start_month: str
+        :param start_month: last day of series
+        :type start_month: str
+        """
         dates = [start_day, end_day]
         start, end = [datetime.strptime(_, "%Y-%m-%d") for _ in dates]
         return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m-%d"), None) for _ in range((end - start).days)).keys())
 
     def add_metadata(data,language):
+        """
+        :param data: dataset with id and text columns
+        :type data: pandas DataFrame object
+        :param language: language of dataset in ISO 639 format
+        :type language: str
+        """
         with open(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{language}/metadata/metadata.json",'r',encoding='utf-8') as f:
             metadata = json.load(f)
 
@@ -58,6 +70,14 @@ class utils():
         return data
 
     def windowizer(data,words=[],window=5):
+        """
+        :param data: dataset with id and text columns
+        :type data: pandas DataFrame object
+        :param words: words to be considered
+        :type language: list
+        :param window: window to analyze, both left and right of keyword
+        :type window: int
+        """
         result = []
         for c,text in enumerate(data['text']):
             text = str(text).split(' ')
