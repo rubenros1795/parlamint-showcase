@@ -31,6 +31,7 @@ import polyglot
 from polyglot.text import Text
 import io
 import requests
+from sklearn.feature_extraction.text import TfidfVectorizer
 import itertools
 
 base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
@@ -319,3 +320,43 @@ class plotting():
         sns.set(font='Inter, Medium',rc={'axes.xmargin':0,'axes.ymargin':0,'axes.axisbelow': True,'axes.edgecolor': 'lightgrey','axes.facecolor': 'None', 'axes.grid': True,'grid.color':'whitesmoke','axes.labelcolor':'dimgrey','axes.spines.top': True,'figure.facecolor': 'white','lines.solid_capstyle': 'round','patch.edgecolor': 'w','patch.force_edgecolor': True,'text.color': 'dimgrey','xtick.bottom': True,'xtick.color': 'dimgrey','xtick.direction': 'out','xtick.top': False,'ytick.color': 'dimgrey','ytick.direction': 'out','ytick.left': False, 'ytick.right': False})
         sns.set_context("notebook", rc={"font.size":16,"axes.titlesize":20, "axes.labelsize":16})
         sns.set_palette(pal,n_var)
+
+class DenseTfIdf(TfidfVectorizer):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def transform(self, x, y=None) -> pd.DataFrame:
+        res = super().transform(x)
+        df = pd.DataFrame(res.toarray(), columns=self.get_feature_names())
+        return df
+
+    def fit_transform(self, x, y=None) -> pd.DataFrame:
+        res = super().fit_transform(x, y=y)
+        #df = pd.DataFrame(res.toarray(), columns=self.get_feature_names(), index=x.index())
+        return self,res
+
+class tfidf():
+
+    def get_docterms(data,text_column):
+        texts = list(data[text_column])
+        return DenseTfIdf(sublinear_tf=True, max_df=0.5,min_df=2,encoding='ascii',ngram_range=(1, 2),lowercase=True,max_features=1000,stop_words='english').fit_transform(texts)
+
+    def get_topterms(tfidf_object,docterms,data,category_column):
+        docterms = pd.DataFrame(docterms.toarray(), columns=tfidf_object.get_feature_names(),index=data.index)
+        d = pd.DataFrame()
+
+        for cat in set(data[category_column]):
+            # Need to keep alignment of indexes between the original dataframe and the resulted documents-terms dataframe
+            df_class = data[(data[category_column] == cat)]
+            df_docs_terms_class = docterms.iloc[df_class.index]
+            # sum by columns and get the top n keywords
+            dfop = df_docs_terms_class.sum(axis=0).nlargest(n=50)
+            dfop = pd.DataFrame(dfop).reset_index()
+            dfop.columns = [cat + " terms",cat + " score"]
+            #dfop[cat + " score"] = [round(x,2) for x in dfop[cat + " score"]]
+
+            d[cat + " terms"] = dfop[cat + " terms"]
+        return d

@@ -3,7 +3,8 @@ from glob import glob as gb
 import pandas as pd
 from tqdm import tqdm
 
-original_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original"
+base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
+original_path = base_path + "/data/original"
 
 def preprocess(fn,lowercase=True,tokenize=False,remove_punc=True):
     f = pd.read_csv(fn,sep='\t',header=None)
