@@ -129,6 +129,11 @@ class data_loader():
 
     def period(language="",data_version="preprocessed",start_date="",end_date=""):
         """
+	:parameter language: language of dataset in ISO 639 format
+	:type language: str
+	:param data_version: version of the data, preprocessed, raw or lemmatized
+	:type: data_version str
+	"""
         if len(start_date) == 10:
             periods = utils.day_generator(start_date,end_date)
         if len(start_date) == 7:
