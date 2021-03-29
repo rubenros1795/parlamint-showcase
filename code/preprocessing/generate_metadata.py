@@ -13,6 +13,7 @@ import subprocess
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
+import sys
 
 base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
 
@@ -39,5 +40,6 @@ def generate_metadata_json(language):
 
     [os.remove(x) for x in metadata_files]
 
-for l in ['si','bg','pl']:
-    generate_metadata_json(l)
+if __name__ == "__main__":
+    language = sys.argv[0]
+    generate_metadata_json(language)

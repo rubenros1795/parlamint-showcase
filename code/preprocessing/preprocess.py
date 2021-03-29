@@ -2,6 +2,8 @@ import re, string,os
 from glob import glob as gb
 import pandas as pd
 from tqdm import tqdm
+import sys
+
 
 base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
 original_path = base_path + "/data/original"
@@ -32,4 +34,5 @@ def preprocess_language(lan=""):
         file.to_csv(fn,sep='\t',index=False)
 
 if __name__ == "__main__":
-    preprocess_language("bg")
+    language = sys.argv[0]
+    preprocess_language(language)

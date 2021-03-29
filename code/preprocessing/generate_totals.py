@@ -35,6 +35,7 @@ def totals_months(months,language,unit):
 
 months = month_generator("2015-01","2020-12")
 
-for language in ['bg','pl','si']:
+if __name__ == "__main__":
+    language = sys.argv[0]
     for u in ['words','sentences','tokens']:
         totals_months(months,language,u)
