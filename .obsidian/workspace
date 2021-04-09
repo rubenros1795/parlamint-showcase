@@ -1,0 +1,101 @@
+{
+  "main": {
+    "id": "e1079d7b1b0c4438",
+    "type": "split",
+    "children": [
+      {
+        "id": "2b8e09c63aaffa96",
+        "type": "leaf",
+        "state": {
+          "type": "image",
+          "state": {
+            "file": "results/plots/frequencies/coronawords-bg-abs-freq.png"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e407e509408479ac",
+    "type": "split",
+    "children": [
+      {
+        "id": "6536e7a719531a9b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b9e63fd5469619ba",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "81931520a6178fc7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 361
+  },
+  "right": {
+    "id": "7b0292ccc7e0ff39",
+    "type": "split",
+    "children": [
+      {
+        "id": "e4cd2554b7109bf8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "99de0113d91c2004",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "results/plots/frequencies/coronawords-bg-abs-freq.png",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "2b8e09c63aaffa96",
+  "lastOpenFiles": [
+    "results/plots/frequencies/coronawords-bg-abs-freq.png",
+    "results/observations.md",
+    "results/plots/metadata/length_words-pl.png",
+    "results/plots/metadata/length_words-si.png",
+    "results/plots/metadata/length_words-bg.png",
+    "results/plots/frequencies/sciencewords-si-rel-freq.png",
+    "results/plots/frequencies/sciencewords-si-abs-freq.png",
+    "results/plots/frequencies/sciencewords-pl-abs-freq.png",
+    "results/plots/frequencies/sciencewords-pl-rel-freq.png",
+    "results/plots/frequencies/sciencewords-bg-rel-freq.png"
+  ]
+}

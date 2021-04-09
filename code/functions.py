@@ -28,7 +28,7 @@ import random
 import math
 
 
-base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
+base_path = "/home/ruben/Documents/GitHub/ParlaMintCase"
 
 
 class utils():
@@ -38,7 +38,7 @@ class utils():
         #:type start_month: str
         #:param start_month: last month of series
         #:type start_month: str
-        """
+        #"""
         dates = [start_month, end_month]
         start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
         return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in range((end - start).days)).keys())
@@ -95,6 +95,17 @@ class utils():
     def find_date(text):
         return re.search(r'(\d+-\d+-\d+)',text).group(0)
 
+    def preprocess_(list_txt,lowercase=True,tokenize=False,remove_punc=True,stopwords=[]):
+        if lowercase == True:
+                list_txt = [str(v).lower() for v in list_txt]
+        if remove_punc == True:
+            list_txt = [re.sub('[%s]' % re.escape(string.punctuation), '', str(v)) for v in list_txt]
+        if tokenize == True:
+            list_txt = [str(v).split(' ') for v in list_txt]
+        list_txt = [re.sub(' +', ' ', x) for x in list_txt]
+        list_txt = [" ".join([w for w in t.split(' ') if w not in set(stopwords)]) for t in list_txt]
+        return list_txt 
+
 class data_loader():
 
     def file(fn):
@@ -116,7 +127,7 @@ class data_loader():
         #"""
         config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
 
-        files_path = os.path.join("/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original",config_options[data_version])
+        files_path = os.path.join(base_path + "/data/original",config_options[data_version])
         list_files = gb(files_path + "*")
         print("found",len(list_files),"files in:",files_path)
         if data_version == "raw":
@@ -129,12 +140,12 @@ class data_loader():
         return data.reset_index(drop=True)
 
     def period(language="",data_version="preprocessed",start_date="",end_date=""):
-        """
-	:parameter language: language of dataset in ISO 639 format
-	:type language: str
-	:param data_version: version of the data, preprocessed, raw or lemmatized
-	:type: data_version str
-	"""
+        # """
+        # :parameter language: language of dataset in ISO 639 format
+        # :type language: str
+        # :param data_version: version of the data, preprocessed, raw or lemmatized
+        # :type: data_version str
+        # """
         if len(start_date) == 10:
             periods = utils.day_generator(start_date,end_date)
         if len(start_date) == 7:
@@ -142,10 +153,11 @@ class data_loader():
             periods = utils.month_generator(start_date,end_date)
 
         config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
-        files_path = os.path.join("/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original",config_options[data_version])
+        files_path = os.path.join(base_path + "/data/original",config_options[data_version])
 
         data = pd.DataFrame()
         files_period = [x for x in gb(files_path + "*") if any(p in x for p in periods) == True and "meta" not in x]
+        print(files_path)
         for f in files_period:
             tdf = pd.read_csv(f,sep='\t')
             data = data.append(tdf)
@@ -254,28 +266,6 @@ class cluster():
         
         return dict(zip(list(matrix.index), idx))
 
-class windows():
-    def inspect_file(data,word,window_size):
-
-        d = []
-        for c,x in enumerate(data['text']):
-            x = x.split(' ')
-            if word in x:
-                indices = [c for c,i in enumerate(x) if i == word]
-                for ind_ in indices:
-                    left = ind_- window_size
-                    right = ind_ + window_size
-                    if left < 0:
-                        left = 0
-                    if right > len(x):
-                        right = len(x)
-                    d.append([data['id'][c]," ".join(x[left:ind_]),word," ".join(x[ind_+1:right])])
-
-        html = f'<html>{pd.DataFrame(d,columns=["id","left","word","right"]).to_html()}</html>'
-
-        with open(f'/media/ruben/Elements/PhD/results/windows/{word}-windows.html','w',encoding='utf-8') as f:
-            f.write(html)
-        print("written ",f'/media/ruben/Elements/PhD/results/windows/{word}-windows.html') 
 
 class polarity(object):
     def __init__(self,language):
@@ -332,20 +322,20 @@ class embeddings():
                 texts = [t.split(' ') for t in texts]
                 print(time_,len(texts))
                 model = gensim.models.Word2Vec(texts, min_count=min_count, workers=workers, iter=iter, size = size, window = window)
-                model.wv.save_word2vec_format(os.path.join(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/results/models/{language}/{language}-{'_'.join(words_fn)}-{time_}-model.bin"), binary=True)
+                model.wv.save_word2vec_format(os.path.join(base_path + f"/results/models/{language}/{language}-{'_'.join(words_fn)}-{time_}-model.bin"), binary=True)
             if count != 0:
                 texts = [data['text'][c] for c,x in enumerate(data['id']) if time_ in str(x)]
                 texts = [t.split(' ') for t in texts]
                 model.build_vocab(texts, update=True)
                 model.train(texts, total_examples = model.corpus_count, start_alpha = model.alpha, end_alpha = model.min_alpha, epochs = model.iter)
-                model.wv.save_word2vec_format(os.path.join(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/results/models/{language}/{language}-{'_'.join(words_fn)}-{time_}-model.bin"), binary=True)
+                model.wv.save_word2vec_format(os.path.join(base_path + f"/results/models/{language}/{language}-{'_'.join(words_fn)}-{time_}-model.bin"), binary=True)
                 print(time_,len(texts))
 
     def train(data,min_count=25, workers=6, iter=10, size = 100, window = 15):
         texts = [t.split(' ') for t in data['text']]
         words = [x.replace('_hits','') for x in data.columns if "_hits" in x]
         model = gensim.models.Word2Vec(texts, min_count=min_count, workers=workers, iter=iter, size = size, window = window)
-        model.wv.save_word2vec_format(os.path.join(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/results/models/{language}/{language}-{'_'.join(words)}-model.bin"), binary=True)
+        model.wv.save_word2vec_format(os.path.join(base_path + f"/results/models/{language}/{language}-{'_'.join(words)}-model.bin"), binary=True)
         return model
 
 class plotting():
@@ -373,9 +363,9 @@ class DenseTfIdf(TfidfVectorizer):
 
 class tfidf():
 
-    def get_docterms(data,text_column):
+    def get_docterms(data,text_column,**kwargs):
         texts = list(data[text_column])
-        return DenseTfIdf(sublinear_tf=True, max_df=0.5,min_df=2,encoding='ascii',ngram_range=(1, 2),lowercase=True,max_features=1000,stop_words='english').fit_transform(texts)
+        return DenseTfIdf(sublinear_tf=True, max_df=0.5,min_df=2,encoding='ascii',lowercase=True,stop_words='english',**kwargs).fit_transform(texts)
 
     def get_topterms(tfidf_object,docterms,data,category_column):
         docterms = pd.DataFrame(docterms.toarray(), columns=tfidf_object.get_feature_names(),index=data.index)
@@ -389,7 +379,7 @@ class tfidf():
             dfop = df_docs_terms_class.sum(axis=0).nlargest(n=50)
             dfop = pd.DataFrame(dfop).reset_index()
             dfop.columns = [cat + " terms",cat + " score"]
-            #dfop[cat + " score"] = [round(x,2) for x in dfop[cat + " score"]]
+            dfop[cat + " score"] = [round(x,2) for x in dfop[cat + " score"]]
 
-            d[cat + " terms"] = dfop[cat + " terms"]
+            d[cat] = dfop[cat + " terms"]
         return d

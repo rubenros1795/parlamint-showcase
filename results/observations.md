@@ -8,6 +8,8 @@
 
 ## Frequency Plots Science Terms
 - Overall: no big change, except in overall frequency. 
+- ! PL shows some increase in the rel. freq. of "ekspert"
+- 
 
 ## Number of Unique Parties in Session
 - BG: no significant changes, low number of parties (6)

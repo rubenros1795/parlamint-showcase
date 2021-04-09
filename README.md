@@ -14,7 +14,7 @@ By taking this approach we aim to answer the following questions:
 3. To what extent do we see changes in the politicality of scientific knowledge as measured through the interaction between employment and contestation?
 
 ## Methods
-The text analysis is done in Python. In the ```code``` folder, all the scripts can be found. The case is based primarily on established text analysis methods such as frequency analysis, sentiment analysis, TF-IDF and word embeddings.
+The text analysis is done in Python. In the ```code``` folder, all the scripts can be found. The case is based primarily on established text analysis methods such as frequency analysis, sentiment analysis and word association measures such as PMI.
 
 ## Data
 The data comes in ```TEI``` xml format. From this, ```.txt``` files are generated that can be easily queried with their associated metadata. 
