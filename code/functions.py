@@ -33,34 +33,34 @@ base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
 
 class utils():
     def month_generator(start_month,end_month):
-        """
-        :param start_month: first month of series
-        :type start_month: str
-        :param start_month: last month of series
-        :type start_month: str
+        #"""
+        #:param start_month: first month of series
+        #:type start_month: str
+        #:param start_month: last month of series
+        #:type start_month: str
         """
         dates = [start_month, end_month]
         start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
         return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in range((end - start).days)).keys())
 
     def day_generator(start_day,end_day):
-         """
-        :param start_month: first day of series
-        :type start_month: str
-        :param start_month: last day of series
-        :type start_month: str
-        """
+        #"""
+        #:param start_month: first day of series
+        #:type start_month: str
+        #:param start_month: last day of series
+        #:type start_month: str
+        #"""
         dates = [start_day, end_day]
         start, end = [datetime.strptime(_, "%Y-%m-%d") for _ in dates]
         return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m-%d"), None) for _ in range((end - start).days)).keys())
 
     def add_metadata(data,language):
-        """
-        :param data: dataset with id and text columns
-        :type data: pandas DataFrame object
-        :param language: language of dataset in ISO 639 format
-        :type language: str
-        """
+        #"""
+        #:param data: dataset with id and text columns
+        #:type data: pandas DataFrame object
+        #:param language: language of dataset in ISO 639 format
+        #:type language: str
+        #"""
         with open(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{language}/metadata/metadata.json",'r',encoding='utf-8') as f:
             metadata = json.load(f)
 
@@ -70,14 +70,14 @@ class utils():
         return data
 
     def windowizer(data,words=[],window=5):
-        """
-        :param data: dataset with id and text columns
-        :type data: pandas DataFrame object
-        :param words: words to be considered
-        :type language: list
-        :param window: window to analyze, both left and right of keyword
-        :type window: int
-        """
+        #"""
+        #:param data: dataset with id and text columns
+        #:type data: pandas DataFrame object
+        #:param words: words to be considered
+        #:type language: list
+        #:param window: window to analyze, both left and right of keyword
+        #:type window: int
+        #"""
         result = []
         for c,text in enumerate(data['text']):
             text = str(text).split(' ')
@@ -98,26 +98,27 @@ class utils():
 class data_loader():
 
     def file(fn):
-        """
-        :param fn: filename
-        :type fn: str
-        """
+        #"""
+        #:param fn: filename
+        #:type fn: str
+        #"""
         if os.path.exists(fn):
             return pd.read_csv(fn,sep='\t')
         else:
             print("no DataFrame found")
 
     def full(language,data_version="preprocessed"):
-        """
-        :param language: language of dataset in ISO 639 format
-        :type language: str
-        :param data_version: version of the data, preprocessed, raw or lemmatized
-        :type data_version: str
-        """
+        #"""
+        #:param language: language of dataset in ISO 639 format
+        #:type language: str
+        #:param data_version: version of the data, preprocessed, raw or lemmatized
+        #:type data_version: str
+        #"""
         config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
 
         files_path = os.path.join("/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original",config_options[data_version])
         list_files = gb(files_path + "*")
+        print("found",len(list_files),"files in:",files_path)
         if data_version == "raw":
             list_files = [x for x in list_files if "ParlaMint" in x and "meta" not in x]
         data = pd.DataFrame()

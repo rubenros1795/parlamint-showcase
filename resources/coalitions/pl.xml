@@ -1,1 +1,32 @@
-<governments><period start="2015-11-16" end="2017-12-11" name="Cabinet of Beata Szydło"><coalition><party name="Prawo i Sprawiedliwość" /><party name="Polska Razem" /><party name="Solidarna Polska" /></coalition><opposition><party name="Platforma Obywatelska" /></opposition></period><period start="2017-12-11" end="2019-11-15" name="First Cabinet of Mateusz Morawiecki"><coalition><party name="Prawo i Sprawiedliwość" /><party name="Porozumienie" /><party name="Solidarna Polska" /></coalition><opposition><party name="Platforma Obywatelska" /></opposition></period><period start="2019-11-15" end="present" name="Second Cabinet of Mateusz Morawiecki"><coalition><party name="Prawo i Sprawiedliwość" /><party name="Porozumienie" /><party name="Solidarna Polska" /></coalition><opposition><party name="Koalicja Obywatelska" /></opposition></period></governments>
+<governments>
+	<period end="2017-12-11" name="Cabinet of Beata Szydło" start="2015-11-16">
+		<coalition>
+			<party name="Prawo i Sprawiedliwość"/>
+			<party name="Polska Razem"/>
+			<party name="Solidarna Polska"/>
+		</coalition>
+		<opposition>
+			<party name="Platforma Obywatelska"/>
+		</opposition>
+	</period>
+	<period end="2019-11-15" name="First Cabinet of Mateusz Morawiecki" start="2017-12-11">
+		<coalition>
+			<party name="Prawo i Sprawiedliwość"/>
+			<party name="Porozumienie"/>
+			<party name="Solidarna Polska"/>
+		</coalition>
+		<opposition>
+			<party name="Platforma Obywatelska"/>
+		</opposition>
+	</period>
+	<period end="present" name="Second Cabinet of Mateusz Morawiecki" start="2019-11-15">
+		<coalition>
+			<party name="Prawo i Sprawiedliwość"/>
+			<party name="Porozumienie"/>
+			<party name="Solidarna Polska"/>
+		</coalition>
+		<opposition>
+			<party name="Koalicja Obywatelska"/>
+		</opposition>
+	</period>
+</governments>
