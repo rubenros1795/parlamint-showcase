@@ -61,7 +61,7 @@ class utils():
         #:param language: language of dataset in ISO 639 format
         #:type language: str
         #"""
-        with open(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{language}/metadata/metadata.json",'r',encoding='utf-8') as f:
+        with open(f"/home/ruben/Documents/GitHub/ParlaMintCase/data/original/{language}/metadata/metadata.json",'r',encoding='utf-8') as f:
             metadata = json.load(f)
 
         metadata_tags = list(set(list(metadata.items())[0][1].keys()))

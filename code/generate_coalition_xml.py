@@ -17,8 +17,11 @@ import requests
 from datetime import datetime
 import xml.etree.cElementTree as ET
 from dateutil.parser import parse
+from fuzzywuzzy import process
+from functions import *
 
-base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
+
+base_path = "/home/ruben/Documents/GitHub/ParlaMintCase"
 
 wiki_links = {"bg":["Second_Borisov_Government","Gerdzhikov_Government","Third_Borisov_Government"],
               "pl":["Cabinet_of_Beata_Szydło","First_Cabinet_of_Mateusz_Morawiecki","Second_Cabinet_of_Mateusz_Morawiecki"],
@@ -57,7 +60,23 @@ def find_party_name(short_url,language):
             return "na"
 
 def wikiparser(language,urls):
-    root = ET.Element("governments")
+
+    # data = data_loader.full(language)
+    # data = utils.add_metadata(data,language)
+    # p = list(zip(data['speaker_party'],data['speaker_party_name']))
+    # up = []
+    # for x in p:
+    #     name = x[0].split(';')
+    #     abv = x[1].split(';')
+    #     if len(name) > 1:
+    #         for c,n in enumerate(name):
+    #             up.append([n,abv[c]])
+    #     else:
+    #         up.append([name[0],abv[0]])
+
+    # up = pd.DataFrame(up,columns=["abv","name"]).groupby(["abv","name"]).sum().reset_index()
+
+    root = ET.Element("relations")
 
     for url in urls:
         url = 'https://en.wikipedia.org/wiki/'+url
@@ -101,33 +120,24 @@ def wikiparser(language,urls):
         w = {"start":date_formed,"end":date_dissolved,"member_parties":member_parties,"opposition_parties":opp_parties}
 
         # write xml
-        period = ET.Element('period')
-        period.set("start",w["start"])
-        period.set("end",w["end"])
-        period.set("name",s.find('h1').text)
-        
-        
-        coalition = ET.SubElement(period,'coalition')
-        if len(w['member_parties']) > 0:
-            for mp in w['member_parties']:
-                party = ET.SubElement(coalition,'party')
-                party.set("name",mp)
-        if len(w['member_parties']) == 0:
-            party = ET.SubElement(coalition,'party')
-            party.set("name","")
-        
-        opposition = ET.SubElement(period,'opposition')
-        if len(w['opposition_parties']) > 0:
-            for mp in w['opposition_parties']:
-                party = ET.SubElement(opposition,'party')
-                party.set("name",mp)
-        if len(w['opposition_parties']) == 0:
-            party = ET.SubElement(opposition,'party')
-            party.set("name","")
+        period = ET.Element('relation')
+        period.set("name","coalition")
+        period.set("mutual"," ".join([f"party.{x}" for x in w['member_parties']]))
+        period.set("from",w["start"])
+        period.set("to",w["end"])
+        period.set("gov_name",s.find('h1').text)
+        root.append(period)
+
+        period = ET.Element('relation')
+        period.set("name","opposition")
+        period.set("mutual"," ".join([f"#party.{x}" for x in w['opposition_parties']]))
+        period.set("from",w["start"])
+        period.set("to",w["end"])
+        period.set("gov_name",s.find('h1').text)
 
         root.append(period)
     tree = ET.ElementTree(root)
-    tree.write(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/resources/coalitions/{language}.xml",encoding="UTF-8")
+    tree.write(f"/home/ruben/Documents/GitHub/ParlaMintCase/resources/coalitions/{language}.xml",encoding="UTF-8")
 
 
 for k,v in wiki_links.items():
