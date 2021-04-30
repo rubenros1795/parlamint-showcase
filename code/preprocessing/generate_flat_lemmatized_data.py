@@ -8,6 +8,16 @@ import concurrent.futures
 from lxml import etree
 import sys
 
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-l', '--language', dest="language", required=True)
+args = parser.parse_args()
+
+base_path = "/media/ruben/Elements/ParlaMint"
+
+
 ############
 def rt(fn):
     with open(fn,'r') as f:
@@ -31,8 +41,8 @@ def parse(fn):
         for sentence in speech.findall('.//ns:s', namespaces):
             sentence_text = []
             for word in sentence.findall('.//ns:w', namespaces):
-                
-                lemma = word.attrib['lemma']
+                if 'lemma' in word.attrib.keys():
+                    lemma = word.attrib['lemma']
                 sentence_text.append(lemma)
             speech_text.append(" ".join(sentence_text))
         d.update({id_:". ".join(speech_text)})
@@ -43,10 +53,10 @@ def parse(fn):
 ##########
 
 if __name__ == "__main__":
-    lan = sys.argv[0]
-    list_ = gb(f'/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{lan}/{lan}-ana-xml/*ana.xml*')
-    if os.path.exists(f'/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{lan}/{lan}-ana-txt/') == False:
-        os.mkdir(f'/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{lan}/{lan}-ana-txt/')
+    lan = args.language
+    list_ = gb(f'{base_path}/{lan}/{lan}-ana-xml/*ana.xml*')
+    if os.path.exists(f'{base_path}/{lan}/{lan}-ana-txt/') == False:
+        os.mkdir(f'{base_path}/{lan}/{lan}-ana-txt/')
     print("transforming items:",len(list_))
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as e:
         for u in list_:

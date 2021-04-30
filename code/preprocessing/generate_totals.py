@@ -12,8 +12,17 @@ import subprocess
 import matplotlib.pyplot as plt
 import seaborn as sns
 import json
+import argparse
 
-base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-l', '--language', dest="language", required=True)
+parser.add_argument('-start','--start',dest='start',required=True)
+parser.add_argument('-end','--end',dest='end',required=True)
+args = parser.parse_args()
+
+
+base_path = "/media/ruben/Elements/ParlaMint"
 
 
 def month_generator(start_month,end_month):
@@ -21,21 +30,24 @@ def month_generator(start_month,end_month):
     start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
     return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in range((end - start).days)).keys())
 
-def totals_months(months,language,unit):
-    with open(f"/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase/data/original/{language}/metadata/metadata.json",'r') as f:
-        td = json.load(f)
+def totals_months(months,language):
 
     mt = []
     for m in months:
-        mt.append([m,sum([v[unit] for k,v in td.items() if m in k])])
-    
+        try:
+            grp = f"cut -f2 {base_path}/{language}/{language}-txt/*{m}*"
+            op = subprocess.check_output(grp,shell=True).decode('utf-8')
+            len_tokens = len([x for x in re.sub('[%s]' % re.escape(string.punctuation), '', op.replace('\n',' ')).split(' ') if x != ''])
+            mt.append([m,len_tokens])
+        except Exception as e:
+            print(e)
+            mt.append([m,0])
     mt = pd.DataFrame(mt,columns=['month','n'])
-    mt.to_csv(os.path.join(base_path,"resources","totals",f"{language}-total-{unit}.csv"),index=False)
+    mt.to_csv(os.path.join("/home/ruben/Documents/GitHub/ParlaMintCase","resources","totals",f"{language}-total-tokens.csv"),index=False)
 
 
-months = month_generator("2015-01","2020-12")
+months = month_generator(args.start,args.end)
 
 if __name__ == "__main__":
-    language = sys.argv[0]
-    for u in ['words','sentences','tokens']:
-        totals_months(months,language,u)
+    language = args.language
+    totals_months(months,language,)

@@ -3,13 +3,22 @@ from glob import glob as gb
 import pandas as pd
 from tqdm import tqdm
 import sys
+import argparse
 
+parser = argparse.ArgumentParser()
 
-base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
+parser.add_argument('-l', '--language', dest="language", required=True)
+args = parser.parse_args()
+
+base_path = "/home/ruben/Documents/GitHub/ParlaMintCase"
 original_path = base_path + "/data/original"
 
 def preprocess(fn,lowercase=True,tokenize=False,remove_punc=True):
-    f = pd.read_csv(fn,sep='\t',header=None)
+    try:
+        f = pd.read_csv(fn,sep='\t',header=None)
+    except Exception as e:
+        print(e)
+        return
     # f.columns = "id text".split(' ')
 
     if lowercase == True:
@@ -29,10 +38,14 @@ def preprocess_language(lan=""):
         os.mkdir(language_pp_path)
 
     for f in tqdm(list_files):
-        file = preprocess(f)
-        fn = os.path.join(language_pp_path,os.path.split(f)[-1])
-        file.to_csv(fn,sep='\t',index=False)
+        try:
+            file = preprocess(f)
+            fn = os.path.join(language_pp_path,os.path.split(f)[-1])
+            file.to_csv(fn,sep='\t',index=False)
+        except Exception as e:
+            print(e)
+            continue
 
 if __name__ == "__main__":
-    language = sys.argv[0]
+    language = args.language
     preprocess_language(language)

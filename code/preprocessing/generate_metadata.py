@@ -14,12 +14,18 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 import sys
+import argparse
 
-base_path = "/media/ruben/OSDisk/Users/ruben.ros/Documents/GitHub/ParlaMintCase"
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-l', '--language', dest="language", required=True)
+args = parser.parse_args()
+
+base_path = "/media/ruben/Elements/ParlaMint"
 
 
 def generate_metadata_json(language):
-    metadata_files = os.path.join(base_path + "/data/original",f"{language}/{language}-txt/*")
+    metadata_files = os.path.join(base_path + f"/{language}/{language}-txt/*")
     metadata_files = [x for x in gb(metadata_files) if "meta" in x]
     data = pd.DataFrame()
     for f in metadata_files:
@@ -32,14 +38,14 @@ def generate_metadata_json(language):
         td = {list(data.columns)[c+1].lower():i for c,i in enumerate(row[1:])}
         dict_.update({key:td})
 
-    if os.path.exists(f"{base_path}/data/original/{language}/metadata") == False:
-        os.mkdir(f"{base_path}/data/original/{language}/metadata")
+    if os.path.exists(f"{base_path}/{language}/metadata") == False:
+        os.mkdir(f"{base_path}/{language}/metadata")
     
-    with open(f"{base_path}/data/original/{language}/metadata/metadata.json",'w',encoding='utf-8') as f:
+    with open(f"{base_path}/{language}/metadata/metadata.json",'w',encoding='utf-8') as f:
         json.dump(dict_,f)
 
     [os.remove(x) for x in metadata_files]
 
 if __name__ == "__main__":
-    language = sys.argv[0]
+    language = args.language
     generate_metadata_json(language)

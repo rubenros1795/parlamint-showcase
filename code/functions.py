@@ -8,6 +8,7 @@ from collections import OrderedDict
 import matplotlib.pyplot as plt
 from collections import Counter
 from numpy import vstack,array
+from nltk.corpus import stopwords
 from polyglot.text import Text
 from numpy.random import rand
 from glob import glob as gb
@@ -29,7 +30,7 @@ import math
 
 
 base_path = "/home/ruben/Documents/GitHub/ParlaMintCase"
-
+data_path = "/media/ruben/Elements/ParlaMint"
 
 class utils():
     def month_generator(start_month,end_month):
@@ -61,15 +62,17 @@ class utils():
         #:param language: language of dataset in ISO 639 format
         #:type language: str
         #"""
-        with open(f"/home/ruben/Documents/GitHub/ParlaMintCase/data/original/{language}/metadata/metadata.json",'r',encoding='utf-8') as f:
+        with open(f"{data_path}/{language}/metadata/metadata.json",'r',encoding='utf-8') as f:
             metadata = json.load(f)
 
         metadata_tags = list(set(list(metadata.items())[0][1].keys()))
+        keys_ = set(metadata.keys())
+
         for c in metadata_tags:
             data[c] = [metadata[i][c] for i in data['id']]
         return data
 
-    def windowizer(data,words=[],window=5):
+    def windowizer(data,words=[],window=5,id_column="",text_column=""):
         #"""
         #:param data: dataset with id and text columns
         #:type data: pandas DataFrame object
@@ -78,8 +81,10 @@ class utils():
         #:param window: window to analyze, both left and right of keyword
         #:type window: int
         #"""
+        
         result = []
-        for c,text in enumerate(data['text']):
+        data = data.reset_index(drop=True)
+        for c,text in enumerate(data[text_column]):
             text = str(text).split(' ')
             indices = [c for c,i in enumerate(text) if i in set(words)]
             for c_,ind_ in enumerate(indices):
@@ -89,7 +94,7 @@ class utils():
                     left = 0
                 if right > len(text):
                     right = len(text)
-                result.append([f"{data['id'][c]}-{c_}"," ".join(text[left:right])])
+                result.append([f"{data[id_column][c]}-{c_}"," ".join(text[left:right])])
         return pd.DataFrame(result,columns=['id','window'])
 
     def find_date(text):
@@ -127,17 +132,25 @@ class data_loader():
         #"""
         config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
 
-        files_path = os.path.join(base_path + "/data/original",config_options[data_version])
+        files_path = os.path.join(data_path,config_options[data_version])
+        
         list_files = gb(files_path + "*")
         print("found",len(list_files),"files in:",files_path)
-        if data_version == "raw":
-            list_files = [x for x in list_files if "ParlaMint" in x and "meta" not in x]
-        data = pd.DataFrame()
+        
+        li = []
         for f in list_files:
-            tdf = pd.read_csv(f,sep='\t')
-            data = data.append(tdf)
+            try:
+                tdf = pd.read_csv(f,sep='\t', index_col=None, header=None)
+                if len(tdf.columns) == 2:
+                    li.append(tdf)
+                else:
+                    print(f)
+            except Exception as e:
+                print(f,e)
+                continue
+        data = pd.concat(li,axis=0).reset_index(drop=True)
         data.columns = ["id","text"]
-        return data.reset_index(drop=True)
+        return data
 
     def period(language="",data_version="preprocessed",start_date="",end_date=""):
         # """
@@ -146,26 +159,38 @@ class data_loader():
         # :param data_version: version of the data, preprocessed, raw or lemmatized
         # :type: data_version str
         # """
+        start_date = str(start_date)
+        end_date = str(end_date)
+
         if len(start_date) == 10:
             periods = utils.day_generator(start_date,end_date)
         if len(start_date) == 7:
-            format_date = "month"
             periods = utils.month_generator(start_date,end_date)
 
         config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
-        files_path = os.path.join(base_path + "/data/original",config_options[data_version])
-
-        data = pd.DataFrame()
+        files_path = os.path.join(data_path,config_options[data_version])
+        
+        
         files_period = [x for x in gb(files_path + "*") if any(p in x for p in periods) == True and "meta" not in x]
-        print(files_path)
+        print(f"found {len(files_period)} files")
+
+        li = []
         for f in files_period:
-            tdf = pd.read_csv(f,sep='\t')
-            data = data.append(tdf)
+            try:
+                tdf = pd.read_csv(f,sep='\t', index_col=None, header=None)
+                if len(tdf.columns) == 2:
+                    li.append(tdf)
+                else:
+                    print(f)
+            except Exception as e:
+                print(f,e)
+                continue
+        data = pd.concat(li,axis=0).reset_index(drop=True)
         data.columns = ["id","text"]
-        return data.reset_index(drop=True)
+        return data
 
     def subset(data,words=[]):
-        ss = [c for c,i in enumerate(data['text']) if any(w in set(i.split(' ')) for w in words) == True]
+        ss = [c for c,i in enumerate(data['text']) if any(w in set(str(i).split(' ')) for w in words) == True]
         data = data.iloc[ss,:].reset_index(drop=True)
         return data
     
@@ -266,48 +291,6 @@ class cluster():
         
         return dict(zip(list(matrix.index), idx))
 
-
-class polarity(object):
-    def __init__(self,language):
-        self.pos_words_chen = set(pd.read_csv(base_path + f'/resources/lexicons/sentiment-lexicons/positive_words_{language}.txt',header=None)[0])
-        self.neg_words_chen = set(pd.read_csv(base_path + f'/resources/lexicons/sentiment-lexicons/negative_words_{language}.txt',header=None)[0])
-
-        with open(base_path + f'/resources/lexicons/sentistrength-lexicons/{language}.txt','r',encoding='utf-8') as f:
-            c = f.readlines()
-            self.sentistrength_data = [x.replace('\n','').split('\t') for x in c]
-    
-    def grouper(n, iterable, fillvalue=None):
-            args = [iter(iterable)] * n
-            return itertools.zip_longest(*args, fillvalue=fillvalue)
-
-    def chen_classifier(self,text):
-        text = text.split(' ')
-        s =0
-        for w in text:
-            if w in self.pos_words_chen or w in self.neg_words_chen:
-                s += 1
-        return s / len(text)
-
-    def polyglot_classifier(self,text):
-        text = Text(text)
-        r = sum([w.polarity for w in text.words]) / len(text.words)
-        return r
-
-    def sentistrength_classifier(self,text):
-        text = text.split(' ')
-        d = []
-        for x in self.sentistrength_data:
-            x = list(polarity.grouper(2,x))
-            for i in x:
-                d.append(i)
-        d = [(x[0].replace(u'\xa0', u' ').replace(' ',''),x[1]) for x in d]
-        d = dict(d)
-        s = []
-        for w in text:
-            if w in set(d.keys()):
-                s += int(d[w])
-        return sum(s) / len(s)
-
 class embeddings():
     def train_diachronic(data,start_date,end_date,min_count=25, workers=6, iter=10, size = 100, window = 15):
         if len(start_date) == 10:
@@ -339,9 +322,9 @@ class embeddings():
         return model
 
 class plotting():
-    def style_(pal,n_var):
-        sns.set(font='Inter, Medium',rc={'axes.xmargin':0,'axes.ymargin':0,'axes.axisbelow': True,'axes.edgecolor': 'lightgrey','axes.facecolor': 'None', 'axes.grid': True,'grid.color':'whitesmoke','axes.labelcolor':'dimgrey','axes.spines.top': True,'figure.facecolor': 'white','lines.solid_capstyle': 'round','patch.edgecolor': 'w','patch.force_edgecolor': True,'text.color': 'dimgrey','xtick.bottom': True,'xtick.color': 'dimgrey','xtick.direction': 'out','xtick.top': False,'ytick.color': 'dimgrey','ytick.direction': 'out','ytick.left': False, 'ytick.right': False})
-        sns.set_context("notebook", rc={"font.size":16,"axes.titlesize":20, "axes.labelsize":16})
+    def style_(pal="Paired",n_var=12):
+        sns.set(font='Inter, Medium',rc={'axes.xmargin':0,'axes.ymargin':0,'axes.axisbelow': True,'axes.edgecolor': 'lightgrey','axes.facecolor': 'None', 'axes.grid': True,'grid.color':'whitesmoke','axes.labelcolor':'black','axes.spines.top': True,'figure.facecolor': 'white','lines.solid_capstyle': 'round','patch.edgecolor': 'w','patch.force_edgecolor': True,'text.color': 'black','xtick.bottom': True,'xtick.color': 'black','xtick.direction': 'out','xtick.top': False,'ytick.color': 'black','ytick.direction': 'out','ytick.left': False, 'ytick.right': False})
+        sns.set_context("notebook", rc={"font.size":16,"axes.titlesize":16, "axes.labelsize":14})
         sns.set_palette(pal,n_var)
 
 class DenseTfIdf(TfidfVectorizer):
@@ -365,7 +348,7 @@ class tfidf():
 
     def get_docterms(data,text_column,**kwargs):
         texts = list(data[text_column])
-        return DenseTfIdf(sublinear_tf=True, max_df=0.5,min_df=2,encoding='ascii',lowercase=True,stop_words='english',**kwargs).fit_transform(texts)
+        return DenseTfIdf(sublinear_tf=True, max_df=0.2,min_df=0.01,smooth_idf=True,ngram_range=(1,4),lowercase=True,**kwargs).fit_transform(texts)
 
     def get_topterms(tfidf_object,docterms,data,category_column):
         docterms = pd.DataFrame(docterms.toarray(), columns=tfidf_object.get_feature_names(),index=data.index)
