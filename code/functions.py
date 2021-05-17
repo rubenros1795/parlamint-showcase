@@ -348,7 +348,7 @@ class tfidf():
 
     def get_docterms(data,text_column,**kwargs):
         texts = list(data[text_column])
-        return DenseTfIdf(sublinear_tf=True, max_df=0.2,min_df=0.01,smooth_idf=True,ngram_range=(1,4),lowercase=True,**kwargs).fit_transform(texts)
+        return DenseTfIdf(lowercase=True,**kwargs).fit_transform(texts)
 
     def get_topterms(tfidf_object,docterms,data,category_column):
         docterms = pd.DataFrame(docterms.toarray(), columns=tfidf_object.get_feature_names(),index=data.index)
