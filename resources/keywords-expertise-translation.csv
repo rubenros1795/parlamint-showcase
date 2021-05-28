@@ -1,4 +1,15 @@
 language,word,translation
+gb,expert,expert
+gb,experts,experts
+gb,scientist,scientist
+gb,scientists,scientists
+gb,science,science
+gb,expertise,expertise
+gb,knowledge,knowledge
+gb,information,information
+gb,measures,measures
+gb,policy,policy
+gb,program,program
 bg,expert,експерт
 bg,experts,експерти
 bg,scientist,учен
@@ -155,3 +166,9 @@ es,information,información
 es,measures,medidas
 es,policy,política
 es,program,programa
+dk,expert,ekspert
+dk,experts,eksperter
+dk,scientist,videnskabsmand
+dk,science,videnskab
+dk,expertise,ekspertise
+

@@ -33,6 +33,25 @@ base_path = "/home/ruben/Documents/GitHub/ParlaMintCase"
 data_path = "/media/ruben/Elements/ParlaMint"
 
 class utils():
+    def date_generator(format,start,end):
+        if format == 'month':
+            dates = [start, end]
+            start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
+            return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in range((end - start).days)).keys())
+
+        if format == 'week':
+            if start.split('-')[0] != end.split('-')[0]:
+                weeks = [f"{start.split('-')[0]}-{n}" for n in range(int(start.split('-')[1]),53)] 
+                weeks += [f"{end.split('-')[0]}-{n}" for n in range(0,int(end.split('-')[1])+1)]
+            else:
+                weeks = [f"{start.split('-')[0]}-{n}" for n in range(int(start.split('-')[1]),int(end.split('-')[1]) + 1)] 
+            return [x.replace('-','-0') if len(x) == 6 else x for x in weeks]
+
+        if format == 'day':
+            dates = [start, end]
+            start, end = [datetime.strptime(_, "%Y-%m-%d") for _ in dates]
+            return list(OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m-%d"), None) for _ in range((end - start).days)).keys())
+            
     def month_generator(start_month,end_month):
         #"""
         #:param start_month: first month of series
@@ -100,98 +119,31 @@ class utils():
     def find_date(text):
         return re.search(r'(\d+-\d+-\d+)',text).group(0)
 
-    def preprocess_(list_txt,lowercase=True,tokenize=False,remove_punc=True,stopwords=[]):
-        if lowercase == True:
-                list_txt = [str(v).lower() for v in list_txt]
-        if remove_punc == True:
-            list_txt = [re.sub('[%s]' % re.escape(string.punctuation), '', str(v)) for v in list_txt]
-        if tokenize == True:
-            list_txt = [str(v).split(' ') for v in list_txt]
-        list_txt = [re.sub(' +', ' ', x) for x in list_txt]
-        list_txt = [" ".join([w for w in t.split(' ') if w not in set(stopwords)]) for t in list_txt]
-        return list_txt 
+    def preprocess(txt,stopwords_=[]):
+        translator = str.maketrans('', '', string.punctuation)
+        txt = txt.translate(translator)
+        txt = txt.replace('—',' ')
+        txt = re.sub('\s+', ' ', txt).strip()
+        txt = txt.lower()
+        txt = [w for w in txt.split(' ') if w not in stopwords_ and any(c.isdigit() for c in w) == False]
+        return " ".join(txt)
 
 class data_loader():
 
-    def file(fn):
-        #"""
-        #:param fn: filename
-        #:type fn: str
-        #"""
-        if os.path.exists(fn):
-            return pd.read_csv(fn,sep='\t')
-        else:
-            print("no DataFrame found")
-
-    def full(language,data_version="preprocessed"):
-        #"""
-        #:param language: language of dataset in ISO 639 format
-        #:type language: str
-        #:param data_version: version of the data, preprocessed, raw or lemmatized
-        #:type data_version: str
-        #"""
-        config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
-
-        files_path = os.path.join(data_path,config_options[data_version])
-        
-        list_files = gb(files_path + "*")
-        print("found",len(list_files),"files in:",files_path)
-        
+    def load_month(language,start_month,end_month):
+        months = utils.month_generator(start_month=start_month,end_month=end_month)
+        files_month = [i for i in gb(f'/media/ruben/Elements/ParlaMint/data_transformed/{language}/*') if any(n in i for n in months) == True]
         li = []
-        for f in list_files:
+        for f in files_month:
             try:
-                tdf = pd.read_csv(f,sep='\t', index_col=None, header=None)
-                if len(tdf.columns) == 2:
-                    li.append(tdf)
-                else:
-                    print(f)
+                tdf = pd.read_csv(f)
+                li.append(tdf)
             except Exception as e:
                 print(f,e)
                 continue
         data = pd.concat(li,axis=0).reset_index(drop=True)
-        data.columns = ["id","text"]
-        return data
-
-    def period(language="",data_version="preprocessed",start_date="",end_date=""):
-        # """
-        # :parameter language: language of dataset in ISO 639 format
-        # :type language: str
-        # :param data_version: version of the data, preprocessed, raw or lemmatized
-        # :type: data_version str
-        # """
-        start_date = str(start_date)
-        end_date = str(end_date)
-
-        if len(start_date) == 10:
-            periods = utils.day_generator(start_date,end_date)
-        if len(start_date) == 7:
-            periods = utils.month_generator(start_date,end_date)
-
-        config_options = {"preprocessed":f"{language}/{language}-txt-preproc/","lemmatized":f"{language}/{language}-ana-txt/","raw":f"{language}/{language}-txt/"}
-        files_path = os.path.join(data_path,config_options[data_version])
-        
-        
-        files_period = [x for x in gb(files_path + "*") if any(p in x for p in periods) == True and "meta" not in x]
-        print(f"found {len(files_period)} files")
-
-        li = []
-        for f in files_period:
-            try:
-                tdf = pd.read_csv(f,sep='\t', index_col=None, header=None)
-                if len(tdf.columns) == 2:
-                    li.append(tdf)
-                else:
-                    print(f)
-            except Exception as e:
-                print(f,e)
-                continue
-        data = pd.concat(li,axis=0).reset_index(drop=True)
-        data.columns = ["id","text"]
-        return data
-
-    def subset(data,words=[]):
-        ss = [c for c,i in enumerate(data['text']) if any(w in set(str(i).split(' ')) for w in words) == True]
-        data = data.iloc[ss,:].reset_index(drop=True)
+        data.columns = [x.lower() for x in data.columns]
+        data = data.drop(['session','meeting','sitting','agenda','speaker_birth'],axis=1)
         return data
     
 class frequency():
@@ -210,116 +162,16 @@ class frequency():
             data['date'] = [re.search(r'\d{4}-\d{2}', text).group() for text in data['id']]
         if period_format == "day":
             data['date'] = [re.search(r'\d{4}-\d{2}-\d{2}', text).group() for text in data['id']]
-        
+        if period_format == "week":
+            data['date'] = [re.search(r'\d{4}-\d{2}-\d{2}', text).group() for text in data['id']]
+            data['date'] = pd.to_datetime(data['date'], infer_datetime_format=True)  
+            data['week'] = [str(x.isocalendar()[1]) for x in data['date']]
         return data
 
     def distribution(freq_info,metadata_selectors):
         freq_info = freq_info[["date"] + metadata_selectors + [c for c in freq_info.columns if "hits" in c]]
         return freq_info.groupby(['date'] + metadata_selectors).sum().reset_index()
 
-    def pmi_windows(text,words=[],window=5):
-        list_windows = []
-        text = text.split(' ')
-        indices = [c for c,i in enumerate(text) if i in set(words)]
-        for ind_ in indices:
-            left = ind_- window
-            right = ind_ + window
-            if left < 0:
-                left = 0
-            if right > len(text):
-                right = len(text)
-            list_windows.append(text[left:right])
-        return list_windows
-
-    def get_pmi_table(data,date,window,word,stopwords):
-        data = data[data['id'].str.contains(date)]
-        data['text'] = data['text'].astype(str)
-
-        all_words = [i.split(' ') for i in data['text']]
-        all_words = Counter([item for sublist in all_words for item in sublist])
-        N = sum(all_words.values())
-
-        windows = [frequency.pmi_windows(str(x),words=[word],window=window) for x in data['text']]
-        windows = [set(item) for sublist in windows for item in sublist if len(sublist) > 0]
-
-        candidates = set([item for sublist in windows for item in sublist if item not in stopwords and len(item) > 3 and '-' not in item and all_words[item] > 5])
-
-        d = []
-        for candidate in candidates:
-
-            p1 = all_words[word]
-            p2 = all_words[candidate]
-            p12 = len([x for x in windows if candidate in x and word in x])
-
-            if p12 > 0:
-                try:
-                    pmi_reg = math.log(((p12) / (p1 * p2)), 2)
-                    pmi_2 = math.log(((p12 ** 2) / (p1 * p2)), 2)
-                    pmi_3 = math.log(((p12 ** 3) / (p1 * p2)), 2)
-                    npmi = pmi_reg / - math.log(p12)
-                    d.append([candidate,p1,p2,p12,pmi_reg,pmi_2,pmi_3,npmi])
-                except:
-                    continue
-
-        d = pd.DataFrame(d,columns=['w','p1','p2','p12','pmi_reg','pmi_2','pmi_3','npmi'])
-        return d
-
-class cluster():
-    def generate_matrix(list_words,model_name):
-        model = KeyedVectors.load(model_name)
-        vocab = set(list(model.wv.vocab))
-        list_words = [w for w in set(list_words) if w in vocab]
-        print("created list with " + str(len(list_words)) + " words")
-
-        total_list = list()
-        
-        for word in list_words:
-            
-            list_word = list()
-            
-            for term in list_words:
-                tmp = model.similarity(word, term)
-                list_word.append(tmp)
-            
-            total_list.append(list_word)
-        df = pd.DataFrame(total_list, columns = list_words, index = list_words)
-        return df
-
-    def cluster_word(matrix, k):
-        centroids,_ = kmeans(matrix,k)
-        idx,_ = vq(matrix,centroids)
-        
-        return dict(zip(list(matrix.index), idx))
-
-class embeddings():
-    def train_diachronic(data,start_date,end_date,min_count=25, workers=6, iter=10, size = 100, window = 15):
-        if len(start_date) == 10:
-            periods = utils.day_generator(start_date,end_date)
-        if len(start_date) == 7:
-            format_date = "month"
-            periods = utils.month_generator(start_date,end_date)
-
-        for count,time_ in enumerate(periods):
-            if count == 0:
-                texts = [data['text'][c] for c,x in enumerate(data['id']) if time_ in str(x)]
-                texts = [t.split(' ') for t in texts]
-                print(time_,len(texts))
-                model = gensim.models.Word2Vec(texts, min_count=min_count, workers=workers, iter=iter, size = size, window = window)
-                model.wv.save_word2vec_format(os.path.join(base_path + f"/results/models/{language}/{language}-{'_'.join(words_fn)}-{time_}-model.bin"), binary=True)
-            if count != 0:
-                texts = [data['text'][c] for c,x in enumerate(data['id']) if time_ in str(x)]
-                texts = [t.split(' ') for t in texts]
-                model.build_vocab(texts, update=True)
-                model.train(texts, total_examples = model.corpus_count, start_alpha = model.alpha, end_alpha = model.min_alpha, epochs = model.iter)
-                model.wv.save_word2vec_format(os.path.join(base_path + f"/results/models/{language}/{language}-{'_'.join(words_fn)}-{time_}-model.bin"), binary=True)
-                print(time_,len(texts))
-
-    def train(data,min_count=25, workers=6, iter=10, size = 100, window = 15):
-        texts = [t.split(' ') for t in data['text']]
-        words = [x.replace('_hits','') for x in data.columns if "_hits" in x]
-        model = gensim.models.Word2Vec(texts, min_count=min_count, workers=workers, iter=iter, size = size, window = window)
-        model.wv.save_word2vec_format(os.path.join(base_path + f"/results/models/{language}/{language}-{'_'.join(words)}-model.bin"), binary=True)
-        return model
 
 class plotting():
     def style_(pal="Paired",n_var=12):
