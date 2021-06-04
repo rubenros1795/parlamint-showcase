@@ -20,15 +20,11 @@ The nature of parliamentary language also changes in times of crisis. Political 
 
 The research departed from the hypothesis that the corona crisis provoked more references to expertise in European parliaments. Frequency patterns quickly disprove this expected general pattern of increasing frequencies. In this section I use a lexicon of terms related to expertise ("expert","science" and "expertise", translated in all participating languages) to inspect frequencies as a first step. Figure X, for example, shows the relative frequencies of the lemma "expert" in eight different countries. Only the patterns in Dutch, Italian, Polish and Spanish suggest change as a result of the corona pandemic (the dashed gray line marks the first week of March 2020 during which infections grew rapidly in many countries).
 
-```
 ![Relative Frequencies of 'expert'](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/frequencies/expert-relfreq-gbnldkitczpleslt.png)
-```
 
 Before taking a deep dive into the speeches that mention expertise, it is worthwhile to further investigate other frequency patterns. One way of getting a better idea of national differences and commonalities is investigating the coalition-opposition distribution of the frequency of 'expert'. I plotted the frequency of this term in the first five months of the pandemic (March - July) by coalition and opposition, normalized by the total number of tokens for opposition and coalition (to control for the overall differences in speech size between both groups). The resulting charts shows that there is not common pattern. In Latvia and the Netherlands, the coalition speaks relatively more of experts. In Great Britain, Italy, Czech Republic, Poland and Spain, the opposition speaks more about experts. 
 
-```
 ![Relative Frequencies of 'expert' by coalition-opposition](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/frequencies/expert-relfreq-coaltion-gbnlitczpleslt.png)
-```
 
 The divergent patterns in coalition-opposition distributions prompted me to investigate the individual speakers in their uses of "expert". Inspecting the top "users" of the term shows how in several countries it is the Health Minister (or persons with a comparable position) that utter "expert" the most. James Bethell in Great Britain, Hugo de Jonge in the Netherlands, Aurelijus Veryga in Lithuania and Magnus Heunicke in Denmark use the term the most in their parliaments.  In Italy, Poland and Spain, the prime minister uses the lemma the most. The high rankings of these persons is not surprising. As the crisis unfolded, (prime) ministers drew on experts in their decision-making. However, in multiple countries, opposition figures also use the term frequently. In the Netherlands, the health minister is closely followed by two MPs from the opposition. In Czech Republic two opposition party members occupy the top positions (although we must be careful to draw conclusions from the low frequencies). Similarly, in Spain, Pablo Casado Blanco, leader of the largest opposition party (Partido Popular) follows Pedro Sánchez in the top users of the term.
 
