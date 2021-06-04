@@ -26,17 +26,27 @@ The research departed from the hypothesis that the corona crisis provoked more r
 
 Before taking a deep dive into the speeches that mention expertise, it is worthwhile to further investigate other frequency patterns. One way of getting a better idea of national differences and commonalities is investigating the coalition-opposition distribution of the frequency of 'expert'. I plotted the frequency of this term in the first five months of the pandemic (March - July) by coalition and opposition, normalized by the total number of tokens for opposition and coalition (to control for the overall differences in speech size between both groups). The resulting charts shows that there is not common pattern. In Latvia and the Netherlands, the coalition speaks relatively more of experts. In Great Britain, Italy, Czech Republic, Poland and Spain, the opposition speaks more about experts. 
 
-[bar chart of coal/opp uses of 'expert']
+```
+![Relative Frequencies of 'expert' by coalition-opposition](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/frequencies/expert-relfreq-coaltion-gbnlitczpleslt.png)
+```
 
 The divergent patterns in coalition-opposition distributions prompted me to investigate the individual speakers in their uses of "expert". Inspecting the top "users" of the term shows how in several countries it is the Health Minister (or persons with a comparable position) that utter "expert" the most. James Bethell in Great Britain, Hugo de Jonge in the Netherlands, Aurelijus Veryga in Lithuania and Magnus Heunicke in Denmark use the term the most in their parliaments.  In Italy, Poland and Spain, the prime minister uses the lemma the most. The high rankings of these persons is not surprising. As the crisis unfolded, (prime) ministers drew on experts in their decision-making. However, in multiple countries, opposition figures also use the term frequently. In the Netherlands, the health minister is closely followed by two MPs from the opposition. In Czech Republic two opposition party members occupy the top positions (although we must be careful to draw conclusions from the low frequencies). Similarly, in Spain, Pablo Casado Blanco, leader of the largest opposition party (Partido Popular) follows Pedro Sánchez in the top users of the term.
 
+Diving into the speeches themselves shows how especially ministers and coalition members frequently refer to expertise and experts. Often they did so to legitimize policy. Matt Hancock, for example, argued that "we have world-class expertise to make sense of the emerging data" and "Public Health England has world-class expertise in contact-tracing". It also appears that acknowledgement of the role of expert was some kind of shared practice in parliament in the first pandemic months. MPs argued that it "is deeply irresponsible to dismiss expert advice" and praise the "exceptional dedication of our health service workers and medical experts". Similar rhetorical roles of expertise are found in other languages. [...]
+
 The relatively low frequencies of the top users of "expert" hints at a large spread of users. The prime minister of Spain uses 'expert' only 38 times. Because the total number of references is far bigger, a large number of other MPs must have mentioned it. An overview of the distribution of the references over the different speakers is visualised below. The figure shows the number of different speakers that mention 'expert', divided by the monthly total number of different speakers (to compensate for the fact that in some months a high number of different speakers speaks in parliament). Especially the temporal development visible in the figure is interesting. It shows that in Czech Republic, Denmark, Spain, Italy, Lithuania and the Netherlands, the relative number of speakers using 'expertise' increases with the spread of the coronavirus (in the months after February 2020). This means that the lemma "expert" was not only used by prime ministers and health ministers, but also by an increasing number of other MPs. In the case of Spain and the Netherlands this sudden upsurge in topicality declines after April 2020. In other countries the relative number of different speakers mentioning 'expert' seems to return to pre-covid levels.
 
-
+![Relative Number of Different Speakers using the term 'expert'](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/frequencies/expert-relnumspeakers.png)
 
 ## Expertise in Context: TF-IDF Timelines and Topic Models
 
 Since frequency patterns show only a limited picture, the next step in this research was the mapping of the context of mentions of "expert(ise)" or "science". Two methods were used to do so. First, I used basic TF-IDF for keyword extraction. This enabled the composition of a timeline with key terms from speeches that mention terms such as "virus" and "pandemic". In this way we can reconstruct the contents of the debates that contain words such as 'expertise'.
+
+The timelines show the gradual development of parliamentary language surrounding expertise and COVID.  In the United Kingdom, keywords for February and early March 2020 show how speeches about experts and the virus were about the uncertain search for answers. Words such as "incubation", "transmission" and "contact" point at the uncertainty about the nature of the virus. Later in March, experts are referenced in the context of concrete debates on vaccines ("medicine", "trial", "patient") and policies ("advice", "phase", " system"). 
+
+![TF-IDF top terms per day for speeches mentioning 'expert'- and 'corona'-related terms](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/tfidf/tfidf-gb-topterms-sampled-day.png)
+
+[...]
 
 ## Narratives of Expertise: Collocation Analysis
 
@@ -44,3 +54,8 @@ Frequency patterns only reveal the diachronic patterns in the parliamentary 'lif
 
 Collocation analysis revolves around the co-occurrence of units, in this case words. With information on the (relative) frequency of words and their lexical contexts, several measures can be used to calculate association scores. In this research, ````nltk```` was used to generate bigram collocations. The window size was increased to 15 in order to increase the degree to which the algorithm searches for paradigmatic, instead of syntagmatic relations. If we take a more common window of 5, we get high-ranking word pairs such as "corona" + "virus", "global" + "epidemic" or simply "the" + "virus". By increasing the window, words that are related to the seed term but are not necessarily its direct neighbours are also considered.
 
+The collocation network in March 2020 for Great Britain shows the strong connection between "expert" and "advice", apparently sought in relation to "travel" and "contact" (as well as "constituent"). This strong connection with "advice" continues in April, but the network shows no clear theme in this month. In May 2020, this changes. Expert is now closely related to "face" and "disposal". Collocates to these words suggest the dominance of debates surrounding the supply of face masks.
+
+In Italy, "expert" is connected mostly to tax issues in March 2020. Additionally, we see connections with "organism" and "situation", potentially indicating talk of the virus. In April, more hints at the increased power of expert enters the network through words such as "decision", "task" and "committee". Similar to the UK, more technical discussions involving "expert" ensue in May, indicated by words such as "logistics", "transport", "care worker" and "indicator".
+
+[...]
