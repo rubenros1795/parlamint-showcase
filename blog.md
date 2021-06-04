@@ -60,4 +60,8 @@ The collocation network in March 2020 for Great Britain shows the strong connect
 
 In Italy, "expert" is connected mostly to tax issues in March 2020. Additionally, we see connections with "organism" and "situation", potentially indicating talk of the virus. In April, more hints at the increased power of expert enters the network through words such as "decision", "task" and "committee". Similar to the UK, more technical discussions involving "expert" ensue in May, indicated by words such as "logistics", "transport", "care worker" and "indicator".
 
-[...]
+![Collocation network for 'expert' in British debates in March 2020](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/collocation-networks/collocation-network-gb-2020-03-expert-topn5-ws5.png)
+
+
+
+![Collocation network for 'expert' in British debates in March 2020](https://github.com/rubenros1795/ParlaMintCase/blob/main/results/plots/collocation-networks/collocation-network-it-2020-03-expert-topn5-ws5.png)
