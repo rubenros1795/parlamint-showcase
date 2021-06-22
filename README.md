@@ -36,9 +36,13 @@ The ```preprocessing``` folder contains the ```transform.ipynb``` notebook that 
 The ```code``` folder contains notebooks for several methods:
 
 ```closereading.ipynb```: a notebook for inspecting individual speeches based on keywords or metadata.
+
 ```collocations.ipynb```: a notebook for collocation analysis using ```nltk```.
+
 ```embeddings.ipynb```: a notebook for inspecting the semantics of keywords using ```word2vec``` models trained in ```train-w2v.py```.
+
 ```metadata.ipynb```: a notebook for visualising metadata (number of speakers per session, number of characters etc.).
+
 ```tfidf.ipynb```: a notebook for inspecting most relevant terms using Term Frequency - Inverse Document Frequency.
 
 The ```functions.py``` file contains helper functions for data loading and the extraction of frequency distributions. 
